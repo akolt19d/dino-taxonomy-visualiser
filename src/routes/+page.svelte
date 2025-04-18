@@ -6,7 +6,7 @@
     const { data }: PageProps = $props();
     const dinosaurData: Dinosaur[] = data.parsedData
 
-    console.log(dinosaurData)
+    // console.log(dinosaurData)
 </script>
 
 <CanvasControls />
