@@ -30,12 +30,15 @@
     }
 
     function draw(width: number, height: number, zoom: number) {
+        console.log(zoom)
         let ctx = canvas.getContext('2d')
         if (!ctx)
             return
 
+        ctx.clearRect(0, 0, width, height)
+
         ctx.fillStyle = "black"
-        ctx.fillRect(100, 100, 100, 100)
+        ctx.fillRect(100, 100, 100*zoom, 100*zoom)
     }
 </script>
 
