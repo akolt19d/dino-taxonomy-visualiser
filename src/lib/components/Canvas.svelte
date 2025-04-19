@@ -1,12 +1,14 @@
 <script lang="ts">
   import { getZoom } from "$lib/stores/Zoom.svelte";
+  import { isSelectMode } from "$lib/stores/MouseMode.svelte";
 
     let canvas: HTMLCanvasElement
+    
+    let cursorState: string = $state("cursor-grab")
+    let isDragging = $state(false)
 
     let canvasWidth = $state(0)
     let canvasHeight = $state(0)
-
-    let isDragging = $state(false)
 
     let offsetX = $state(0)
     let offsetY = $state(0)
@@ -29,6 +31,15 @@
             draw(canvasWidth, canvasHeight, getZoom())
         })
 
+        $effect(() => {
+            if (isSelectMode())
+                cursorState = "default"
+            else if (isDragging)
+                cursorState = "cursor-grabbing"
+            else 
+                cursorState = "cursor-grab"
+        })
+
         console.log("Mounted!")
     });
 
@@ -42,7 +53,7 @@
         if (!ctx)
             return
 
-        const dragSpeed = Math.min(zoom, 0.5)
+        const dragSpeed = Math.min(Math.max(zoom, 0.5), 6)/2
         const posX = (100 + offsetX) * dragSpeed
         const posY = (100 + offsetY) * dragSpeed
 
@@ -53,19 +64,25 @@
     }
 
     function handleMouseDown(e: MouseEvent) {
+        if(isSelectMode())
+            return
+
         const { screenX, screenY } = e
         isDragging = true
         setCurrentMousePosition(screenX, screenY)
     }
 
     function handleMouseUp(e: MouseEvent) {
+        if(isSelectMode())
+            return
+
         const { screenX, screenY } = e
         isDragging = false
         setCurrentMousePosition(screenX, screenY)
     }
 
     function handleDrag(e: MouseEvent) {
-        if (!isDragging)
+        if (!isDragging || isSelectMode())
             return
             
         const { screenX, screenY } = e
@@ -87,5 +104,5 @@
     onmousemove={handleDrag}
     width={canvasWidth} 
     height={canvasHeight}
-    class="{isDragging ? "cursor-grabbing" : "cursor-grab"}"
+    class="{cursorState}"
 ></canvas>
