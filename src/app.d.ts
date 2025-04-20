@@ -21,6 +21,11 @@ declare global {
 		species: string;
 		link: string;
 	}
+
+	type ParsedData = {
+		dinosaurs: Dinosaur[]
+		taxonomies: string[][]
+	}
 }
 
 export {};
