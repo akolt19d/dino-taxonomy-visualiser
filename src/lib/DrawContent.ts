@@ -1,5 +1,7 @@
 import type { Tree } from "./classes/Tree"
 import type { TreeNode } from "./classes/TreeNode"
+import { Container } from "./classes/Container"
+import { DrawableNode } from "./classes/DrawableNode"
 
 interface Drawable {
     width: number
@@ -9,6 +11,11 @@ interface Drawable {
 interface Coordinates {
     x: number
     y: number
+}
+
+interface Size {
+    w: number
+    h: number
 }
 
 let globals = {
@@ -22,6 +29,9 @@ let templateNode: Drawable = {
     height: 80
 }
 
+const container = new Container(0, 0, 2000, 2000)
+const node = new DrawableNode(100, 100, templateNode.width, templateNode.height, "blue", container)
+
 export function drawContent(canvas: HTMLCanvasElement, tree: Tree, depthMap: Map<number, number>, width: number, height: number, zoom: number, offsetX: number, offsetY: number): void {
     if (!canvas)
         return
@@ -30,18 +40,24 @@ export function drawContent(canvas: HTMLCanvasElement, tree: Tree, depthMap: Map
     if (!ctx)
         return
 
-    setGlobals(offsetX, offsetY, zoom/4)
+    setGlobals(offsetX, offsetY, zoom)
 
     ctx.clearRect(0, 0, width, height)
 
     ctx.fillStyle = "black"
     ctx.font = `${30*zoom}px Arial`
-    // ctx.fillRect(posX, posY, 100*zoom, 100*zoom)
-    // drawNode(ctx, tree.root, calcCoords(300, 300))
+    
+    container.transform(globals.zoom, globals.offsetX, globals.offsetY)
+    container.draw(ctx)
+
+    node.scale(globals.zoom)
+    node.draw(ctx)
+
+    // drawContainer(ctx, depthMap)
 
     // console.log(depthMap)
 
-    spaceNodes(ctx, depthMap)
+    // spaceNodes(ctx, depthMap)
 }
 
 function setGlobals(offsetX: number, offsetY: number, zoom: number) {
@@ -57,6 +73,13 @@ function calcCoords(x: number, y: number): Coordinates {
     return {
         x: posX,
         y: posY
+    }
+}
+
+function calcSize(w: number, h: number): Size {
+    return {
+        w: w*globals.zoom,
+        h: h*globals.zoom
     }
 }
 
@@ -76,6 +99,11 @@ function drawNode(ctx: CanvasRenderingContext2D, node: TreeNode, coords: Coordin
     ctx.fillText(node.value, coords.x, coords.y)
 }
 
-function drawRect(ctx: CanvasRenderingContext2D, coords: Coordinates) {
+function drawContainer(ctx: CanvasRenderingContext2D, depthMap: Map<number, number>) {
+    const coords = calcCoords(0, 0)
+    const size = calcSize(2000, 2000)
 
+    ctx.fillStyle = "red"
+    ctx.fillRect(coords.x, coords.y, size.w, size.h)
+    ctx.fillStyle = "black"
 }
