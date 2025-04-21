@@ -12,7 +12,11 @@ export class TreeNode {
         return Array.from(this._children)
     }
 
-    public get children(): Set<string> {
+    public get children(): Set<TreeNode> {
+        return this._children
+    }
+
+    public get childValues(): Set<string> {
         return new Set(this._childrenArr.map(c => c.value))
     }
     
@@ -25,7 +29,7 @@ export class TreeNode {
     }
     
     public addChild(child: string): TreeNode {
-        let childNode = new TreeNode(child)
+        let childNode = new TreeNode(child, this)
         this._children.add(childNode)
         return childNode
     }
@@ -35,10 +39,17 @@ export class TreeNode {
     }
 
     public hasChild(child: string): boolean {
-        return this.children.has(child)
+        return this.childValues.has(child)
+    }
+
+    public get childrenSize(): number {
+        return this._children.size
     }
 
     public getChild(child: string): TreeNode | undefined {
-        return this._children.values().find(x => x.value === child)
+        if (this.childrenSize === 0)
+            return undefined
+
+        return this._childrenArr.find(x => x.value === child)
     }
 }

@@ -3,6 +3,8 @@
     import { isSelectMode } from "$lib/stores/MouseMode.svelte";
     import { drawContent } from "$lib/DrawContent";
 
+    let { tree, depthMap } = $props()
+
     let canvas: HTMLCanvasElement
     
     let cursorState: string = $state("cursor-grab")
@@ -29,7 +31,7 @@
         window.onresize = resizeCanvas
 
         $effect(() => {
-            drawContent(canvas, canvasWidth, canvasHeight, getZoom(), offsetX, offsetY)
+            drawContent(canvas, tree, depthMap, canvasWidth, canvasHeight, getZoom(), offsetX, offsetY)
         })
 
         $effect(() => {

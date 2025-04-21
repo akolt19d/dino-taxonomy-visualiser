@@ -4,7 +4,7 @@ export function parseCsv(data: string): ParsedData {
     const rows = data.split('\n').map(row => row.split(','))
     const headers = rows.shift()
     let taxonomies: string[][] = []
-    const dinosaurs: Dinosaur[] = rows.slice(0, 2).map(row => {
+    const dinosaurs: Dinosaur[] = rows.map(row => {
         const dinosaurBuilder = new DinosaurBuilder()
             .setName(row[0])
             .setDiet(row[1] as "herbivorous" | "carnivorous" | "omnivorous")
