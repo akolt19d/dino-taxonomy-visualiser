@@ -27,7 +27,7 @@ export function updateTreeData(t: Tree, d: Map<number, number>) {
 
     const { width, height } = calcContainerSize(depthMap)
     const padding = {
-        x: .2,
+        x: 1,
         y: 1
     }
     const containerWidth = (width * templateNode.width) + (padding.x * templateNode.width * (width-1))
@@ -54,7 +54,7 @@ export function drawContent(canvas: HTMLCanvasElement, width: number, height: nu
     ctx.font = `${30*zoom}px Arial`
     
     container.transform(globals.zoom, globals.offsetX, globals.offsetY)
-    container.draw(ctx)
+    container.draw(ctx, width, height)
 }
 
 function setGlobals(offsetX: number, offsetY: number, zoom: number) {

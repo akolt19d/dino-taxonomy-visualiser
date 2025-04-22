@@ -1,6 +1,10 @@
 import { clamp } from "$lib/Utils"
 import type { DrawableNode } from "./DrawableNode"
 
+function isVisibleOnCanvas(x: number, y: number, width: number, height: number, canvasWidth: number, canvasHeight: number): boolean {
+    return (x > canvasWidth || x + width < 0 || y > canvasHeight || y + height < 0)
+}
+
 export class Container {
     private _x: number
     private _y: number
@@ -34,14 +38,17 @@ export class Container {
         return clamp(0.5, this.width, 2)/2
     }
 
-    public draw(ctx: CanvasRenderingContext2D): void {
+    public draw(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
+        if (isVisibleOnCanvas(this.x, this.y, this.width, this.height, canvasWidth, canvasHeight))
+            return
+
         ctx.fillStyle = "brown"
         ctx.fillRect(this.x, this.y, this.width, this.height)
-        ctx.strokeStyle = "white"
+        ctx.strokeStyle = "green"
         ctx.lineWidth = 10
         ctx.strokeRect(this.x, this.y, this.width, this.height)
 
-        this.drawNodes(ctx)
+        this.drawNodes(ctx, canvasWidth, canvasHeight)
     }
 
     public transform(zoom: number, offsetX: number, offsetY: number): void {
@@ -49,8 +56,6 @@ export class Container {
         this.y = (this._y + offsetY) * this._dragSpeed
         this.width = this._width * zoom
         this.height = this._height * zoom
-        // this.padding.x = this._padding.x * zoom
-        // this.padding.y = this._padding.y * zoom
 
         this.scaleNodes(zoom)
     }
@@ -70,11 +75,13 @@ export class Container {
         })
     }
 
-    private drawNodes(ctx: CanvasRenderingContext2D): void {
+    private drawNodes(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
         this._nodes.forEach(node => {
             const x = this.x + (node.columnIndex * node.width) + (this.padding.x * node.width * node.columnIndex)
             const y = this.y + (node.rowIndex * node.height) + (this.padding.y * node.height * node.rowIndex)
-            // console.log(this.padding.x, this.padding.y)
+            
+            if (isVisibleOnCanvas(x, y, node.width, node.height, canvasWidth, canvasHeight))
+                return
 
             node.draw(ctx, x, y)
         })
