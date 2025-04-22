@@ -1,7 +1,8 @@
 <script lang="ts">
     import { getZoom } from "$lib/stores/Zoom.svelte";
     import { isSelectMode } from "$lib/stores/MouseMode.svelte";
-    import { drawContent } from "$lib/DrawContent";
+    import { drawContent, updateTreeData } from "$lib/DrawContent";
+    import { clamp } from "$lib/Utils";
 
     let { tree, depthMap } = $props()
 
@@ -31,7 +32,12 @@
         window.onresize = resizeCanvas
 
         $effect(() => {
-            drawContent(canvas, tree, depthMap, canvasWidth, canvasHeight, getZoom(), offsetX, offsetY)
+            updateTreeData(tree, depthMap)
+            console.log("Tree data updated.")
+        })
+
+        $effect(() => {
+            drawContent(canvas, canvasWidth, canvasHeight, getZoom(), offsetX, offsetY)
         })
 
         $effect(() => {
@@ -81,6 +87,8 @@
         const { screenX, screenY } = e
         offsetX += screenX - mouseX
         offsetY += screenY - mouseY
+        // offsetX = clamp(-canvasWidth, offsetX, canvasWidth)
+        // offsetY = clamp(-canvasHeight, offsetY, canvasHeight)
         setCurrentMousePosition(screenX, screenY)
     } 
 </script>

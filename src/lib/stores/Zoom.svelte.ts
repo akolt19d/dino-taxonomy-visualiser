@@ -1,5 +1,5 @@
-const ZOOM_VALUES = [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 3, 4, 5, 6, 7, 8]
-let zoomIndex = $state(ZOOM_VALUES.indexOf(1))
+const ZOOM_VALUES = [0.1, 0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2]
+let zoomIndex = $state(ZOOM_VALUES.indexOf(0.5))
 
 export function getZoom() {
     return ZOOM_VALUES[zoomIndex]
@@ -16,7 +16,7 @@ export function decreaseZoom(): void {
 }
 
 export function resetZoom(): void {
-    zoomIndex = ZOOM_VALUES.indexOf(1)
+    zoomIndex = ZOOM_VALUES.indexOf(0.5)
 }
 
 export function isMinZoom(): boolean {

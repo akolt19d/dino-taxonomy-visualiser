@@ -3,36 +3,42 @@ import type { TreeNode } from "./classes/TreeNode"
 import { Container } from "./classes/Container"
 import { DrawableNode } from "./classes/DrawableNode"
 
-interface Drawable {
-    width: number
-    height: number
-}
-
-interface Coordinates {
-    x: number
-    y: number
-}
-
-interface Size {
-    w: number
-    h: number
-}
-
 let globals = {
     offsetX: 0,
     offsetY: 0,
     zoom: 0
 }
 
-let templateNode: Drawable = {
+const templateNode = {
     width: 200,
-    height: 80
+    height: 200
 }
 
-const container = new Container(0, 0, 2000, 2000)
-const node = new DrawableNode(100, 100, templateNode.width, templateNode.height, "blue", container)
+let tree: Tree;
+let depthMap: Map<number, number>;
 
-export function drawContent(canvas: HTMLCanvasElement, tree: Tree, depthMap: Map<number, number>, width: number, height: number, zoom: number, offsetX: number, offsetY: number): void {
+let container: Container
+let nodes: DrawableNode[] = []
+
+export function updateTreeData(t: Tree, d: Map<number, number>) {
+    tree = t
+    depthMap = d
+    console.log(d)
+
+    const { width, height } = calcContainerSize(depthMap)
+    const padding = {
+        x: .2,
+        y: 1
+    }
+    const containerWidth = (width * templateNode.width) + (padding.x * templateNode.width * (width-1))
+    const containerHeight = (height *templateNode.height) + (padding.y * templateNode.height * (height-1))
+
+    spaceNodes()
+    container = new Container(0, 0, containerWidth, containerHeight, padding, nodes)
+    container.log()
+}
+
+export function drawContent(canvas: HTMLCanvasElement, width: number, height: number, zoom: number, offsetX: number, offsetY: number): void {
     if (!canvas)
         return
 
@@ -49,15 +55,6 @@ export function drawContent(canvas: HTMLCanvasElement, tree: Tree, depthMap: Map
     
     container.transform(globals.zoom, globals.offsetX, globals.offsetY)
     container.draw(ctx)
-
-    node.scale(globals.zoom)
-    node.draw(ctx)
-
-    // drawContainer(ctx, depthMap)
-
-    // console.log(depthMap)
-
-    // spaceNodes(ctx, depthMap)
 }
 
 function setGlobals(offsetX: number, offsetY: number, zoom: number) {
@@ -66,44 +63,25 @@ function setGlobals(offsetX: number, offsetY: number, zoom: number) {
     globals.zoom = zoom
 }
 
-function calcCoords(x: number, y: number): Coordinates {
-    const dragSpeed = Math.min(Math.max(globals.zoom, 0.5), 2)/2
-    const posX = (x + globals.offsetX) * dragSpeed
-    const posY = (y + globals.offsetY) * dragSpeed
-    return {
-        x: posX,
-        y: posY
-    }
-}
-
-function calcSize(w: number, h: number): Size {
-    return {
-        w: w*globals.zoom,
-        h: h*globals.zoom
-    }
-}
-
-function spaceNodes(ctx: CanvasRenderingContext2D, depthMap: Map<number, number>) {
-    const padding = (templateNode.width*1)*globals.zoom
+function spaceNodes() {
     for (const [depthIndex, amount] of depthMap.entries()) {
-        // console.log(depthIndex, amount)
         for (let columnIndex = 0; columnIndex < amount; columnIndex++) {
-            // console.log(j)
-            let coords = calcCoords( columnIndex * (templateNode.width + padding), (templateNode.height + padding) + (templateNode.height + padding)*depthIndex )
-            ctx.fillRect(coords.x, coords.y, templateNode.width*globals.zoom, templateNode.height*globals.zoom)
+            const node = new DrawableNode(columnIndex, depthIndex, templateNode.width, templateNode.height, "blue", container)
+            nodes.push(node)
         }
     }
 }
 
-function drawNode(ctx: CanvasRenderingContext2D, node: TreeNode, coords: Coordinates) {
-    ctx.fillText(node.value, coords.x, coords.y)
-}
+function calcContainerSize(depthMap: Map<number, number>) {
+    let maxWidth = 0
+    let maxHeight = 0
 
-function drawContainer(ctx: CanvasRenderingContext2D, depthMap: Map<number, number>) {
-    const coords = calcCoords(0, 0)
-    const size = calcSize(2000, 2000)
+    for (const [depthIndex, amount] of depthMap.entries()) {
+        maxHeight += 1
+        if (amount > maxWidth) {
+            maxWidth = amount
+        }
+    }
 
-    ctx.fillStyle = "red"
-    ctx.fillRect(coords.x, coords.y, size.w, size.h)
-    ctx.fillStyle = "black"
+    return { width: maxWidth, height: maxHeight }
 }
