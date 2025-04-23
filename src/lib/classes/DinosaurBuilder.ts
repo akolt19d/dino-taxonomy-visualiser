@@ -6,7 +6,7 @@ export class DinosaurBuilder {
         livedIn: "",
         type: "",
         length: "",
-        taxonomy: [],
+        // taxonomy: [],
         namedBy: "",
         species: "",
         link: ""
@@ -42,10 +42,10 @@ export class DinosaurBuilder {
         return this;
     }
 
-    public setTaxonomy(taxonomy: string[]): DinosaurBuilder {
-        this.dinosaur.taxonomy = taxonomy;
-        return this;
-    }
+    // public setTaxonomy(taxonomy: string[]): DinosaurBuilder {
+    //     this.dinosaur.taxonomy = taxonomy;
+    //     return this;
+    // }
 
     public setNamedBy(namedBy: string): DinosaurBuilder {
         this.dinosaur.namedBy = namedBy;

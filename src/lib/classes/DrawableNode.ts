@@ -13,12 +13,14 @@ export class DrawableNode extends TreeNode {
     public width: number
     public height: number
 
-    constructor(columnIndex: number, rowIndex: number, width: number, height: number, color: string, container: Container, value: string, parent?: TreeNode) {
-        super(value, parent)
+    constructor(columnIndex: number, rowIndex: number, width: number, height: number, color: string, container: Container, value: string, parent?: TreeNode, dinoData?: Dinosaur) {
+        super(value, parent, dinoData)
 
         this._width = width
         this._height = height
         this._color = color
+        if (this.isDinosaur)
+            this._color = "green"
         this._container = container
 
         this.columnIndex = columnIndex

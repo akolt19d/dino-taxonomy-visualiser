@@ -68,7 +68,7 @@ export class Container {
             if (!(node instanceof DrawableNode))
                 return
 
-            console.log(`Node '${node.value}': ${node.columnIndex}, ${node.rowIndex}`)
+            console.log(`Node '${node.value}': ${node.columnIndex}, ${node.rowIndex} ${node.isDinosaur ? "<--- Dinosaur" : ""}`)
         })
     }
 

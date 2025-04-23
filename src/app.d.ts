@@ -16,15 +16,20 @@ declare global {
 		livedIn: string;
 		type: string;
 		length: string;
-		taxonomy: string[];
+		// taxonomy: string[];
 		namedBy: string;
 		species: string;
 		link: string;
 	}
 
 	type ParsedData = {
-		dinosaurs: Dinosaur[]
-		taxonomies: string[][]
+		// dinosaurs: Dinosaur[]
+		taxonomies: ParseableDinosaur[]
+	}
+
+	type ParseableDinosaur = {
+		taxonomy: string[]
+		dinosaur: Dinosaur
 	}
 }
 

@@ -5,7 +5,7 @@
     import { getTaxonomyTree } from '$lib/TaxonomyTree';
 
     const { data }: PageProps = $props();
-    const { dinosaurs, taxonomies } = data.parsedData
+    const { taxonomies } = data.parsedData
     const taxonomyTree = getTaxonomyTree(taxonomies)
 </script>
 
