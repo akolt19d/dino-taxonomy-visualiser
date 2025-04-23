@@ -43,11 +43,11 @@ export class Container {
         if (isVisibleOnCanvas(this.x, this.y, this.width, this.height, canvasWidth, canvasHeight))
             return
 
-        ctx.fillStyle = "brown"
-        ctx.fillRect(this.x, this.y, this.width, this.height)
-        ctx.strokeStyle = "green"
-        ctx.lineWidth = 10
-        ctx.strokeRect(this.x, this.y, this.width, this.height)
+        // ctx.fillStyle = "brown"
+        // ctx.fillRect(this.x, this.y, this.width, this.height)
+        // ctx.strokeStyle = "green"
+        // ctx.lineWidth = 2
+        // ctx.strokeRect(this.x, this.y, this.width, this.height)
 
         this.drawNodes(ctx, canvasWidth, canvasHeight)
     }
@@ -81,6 +81,18 @@ export class Container {
         })
     }
 
+    private connectNodes(ctx: CanvasRenderingContext2D, start: Coordinates, end: Coordinates): void {
+
+        ctx.strokeStyle = "white"
+        ctx.lineWidth = 3
+        ctx.beginPath()
+        ctx.moveTo(start.x, start.y)
+        // ctx.lineTo(end.x, end.y)
+        let breakpoint = (start.y - end.y) * this.padding.y
+        ctx.bezierCurveTo(start.x, start.y - breakpoint, end.x, end.y + breakpoint, end.x, end.y)
+        ctx.stroke()
+    }
+
     private drawNodes(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
         this._tree.nodes().forEach(node => {
             if (!(node instanceof DrawableNode))
@@ -88,11 +100,16 @@ export class Container {
 
             const x = this.x + (node.columnIndex * node.width) + (this.padding.x * node.width * node.columnIndex)
             const y = this.y + (node.rowIndex * node.height) + (this.padding.y * node.height * node.rowIndex)
+
+            node.setPosition(x, y)
             
+            if (node.parent && node.parent instanceof DrawableNode)
+                this.connectNodes(ctx, node.topAnchor!, node.parent.bottomAnchor!)
+
             if (isVisibleOnCanvas(x, y, node.width, node.height, canvasWidth, canvasHeight))
                 return
 
-            node.draw(ctx, x, y)
+            node.draw(ctx)
         })
     }
 }

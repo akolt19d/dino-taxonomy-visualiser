@@ -22,8 +22,12 @@ declare global {
 		link: string;
 	}
 
+	type Coordinates = {
+		x: number
+		y: number
+	}
+
 	type ParsedData = {
-		// dinosaurs: Dinosaur[]
 		taxonomies: ParseableDinosaur[]
 	}
 

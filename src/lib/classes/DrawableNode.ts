@@ -12,6 +12,8 @@ export class DrawableNode extends TreeNode {
     public rowIndex: number
     public width: number
     public height: number
+    private x: number | undefined = undefined
+    private y: number | undefined = undefined
 
     constructor(columnIndex: number, rowIndex: number, width: number, height: number, color: string, container: Container, value: string, parent?: TreeNode, dinoData?: Dinosaur) {
         super(value, parent, dinoData)
@@ -20,7 +22,7 @@ export class DrawableNode extends TreeNode {
         this._height = height
         this._color = color
         if (this.isDinosaur)
-            this._color = "green"
+            this._color = "yellow"
         this._container = container
 
         this.columnIndex = columnIndex
@@ -34,11 +36,43 @@ export class DrawableNode extends TreeNode {
         this.height = this._height * zoom
     }
 
-    public draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+    public setPosition(x: number, y: number): void {
+        this.x = x
+        this.y = y
+    }
+
+    public draw(ctx: CanvasRenderingContext2D): void {
+        if (this.x === undefined || this.y === undefined)
+            return
+
         ctx.fillStyle = this._color
-        ctx.fillRect(x, y, this.width, this.height)
+        ctx.fillRect(this.x, this.y, this.width, this.height)
         ctx.strokeStyle = "white"
         ctx.lineWidth = 5
-        ctx.strokeRect(x, y, this.width, this.height)
+        // ctx.strokeRect(this.x, this.y, this.width, this.height)
+    }
+
+    public get topAnchor(): Coordinates | undefined {
+        if (this.x === undefined || this.y === undefined) {
+            console.warn("x and y must be defined before accessing topAnchor")
+            return
+        }
+
+        return {
+            x: this.x + (this.width / 2),
+            y: this.y
+        }
+    }
+
+    public get bottomAnchor(): Coordinates | undefined {
+        if (this.x === undefined || this.y === undefined) {
+            console.warn("x and y must be defined before accessing bottomAnchor")
+            return
+        }
+
+        return {
+            x: this.x + (this.width / 2),
+            y: this.y + this.height
+        }
     }
 }

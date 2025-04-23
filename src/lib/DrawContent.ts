@@ -83,12 +83,12 @@ function depth(node: TreeNode, i?: number, parent?: DrawableNode) {
     let drawable: DrawableNode | undefined = undefined
 
     if (set === undefined) {
-        drawable = new DrawableNode(0, index, templateNode.width, templateNode.height, "blue", container, node.value, parent, node.dinosaurData)
+        drawable = new DrawableNode(0, index, templateNode.width, templateNode.height, "maroon", container, node.value, parent, node.dinosaurData)
         drawable.parent?.addChildNode(drawable)
         depthMap.set(index, 1)
     }
     else {
-        drawable = new DrawableNode(set, index, templateNode.width, templateNode.height, "blue", container, node.value, parent, node.dinosaurData)
+        drawable = new DrawableNode(set, index, templateNode.width, templateNode.height, "maroon", container, node.value, parent, node.dinosaurData)
         drawable.parent?.addChildNode(drawable)
         depthMap.set(index, set + 1)
     }
