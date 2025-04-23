@@ -1,5 +1,6 @@
 import { clamp } from "$lib/Utils"
-import type { DrawableNode } from "./DrawableNode"
+import { DrawableNode } from "./DrawableNode"
+import type { Tree } from "./Tree"
 
 function isVisibleOnCanvas(x: number, y: number, width: number, height: number, canvasWidth: number, canvasHeight: number): boolean {
     return (x > canvasWidth || x + width < 0 || y > canvasHeight || y + height < 0)
@@ -11,7 +12,7 @@ export class Container {
     private _width: number
     private _height: number 
     private _padding: { x: number, y: number }
-    private _nodes: DrawableNode[]
+    private _tree: Tree
 
     public x: number 
     public y: number
@@ -19,8 +20,8 @@ export class Container {
     public height: number
     public padding: { x: number, y: number }
 
-    constructor(x: number, y: number, width: number, height: number, padding: { x: number, y: number }, nodes: DrawableNode[]) {
-        this._nodes = nodes
+    constructor(x: number, y: number, width: number, height: number, padding: { x: number, y: number }, tree: Tree) {
+        this._tree = tree
         this._x = x
         this._y = y
         this._width = width
@@ -63,20 +64,28 @@ export class Container {
     public log(): void {
         console.log(`Container: ${this.x}, ${this.y}, ${this.width}, ${this.height}`)
         console.log(`Padding: ${this.padding.x}, ${this.padding.y}`)
-        console.log(`Nodes: ${this._nodes.length}`)
-        this._nodes.forEach(node => {
-            console.log(`Node: ${node.columnIndex}, ${node.rowIndex}`)
+        this._tree.nodes().forEach(node => {
+            if (!(node instanceof DrawableNode))
+                return
+
+            console.log(`Node '${node.value}': ${node.columnIndex}, ${node.rowIndex}`)
         })
     }
 
     private scaleNodes(zoom: number): void {
-        this._nodes.forEach(node => {
+        this._tree.nodes().forEach(node => {
+            if (!(node instanceof DrawableNode))
+                return 
+
             node.scale(zoom)
         })
     }
 
     private drawNodes(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
-        this._nodes.forEach(node => {
+        this._tree.nodes().forEach(node => {
+            if (!(node instanceof DrawableNode))
+                return 
+
             const x = this.x + (node.columnIndex * node.width) + (this.padding.x * node.width * node.columnIndex)
             const y = this.y + (node.rowIndex * node.height) + (this.padding.y * node.height * node.rowIndex)
             

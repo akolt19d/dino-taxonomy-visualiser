@@ -29,7 +29,6 @@ export class TreeNode {
     }
     
     public addChild(child: string): TreeNode {
-        // make it so it works on nodes as well
         let childNode = new TreeNode(child, this)
 
         if (this.hasChild(child))
@@ -37,6 +36,14 @@ export class TreeNode {
 
         this._children.add(childNode)
         return childNode
+    }
+
+    public addChildNode(child: TreeNode): TreeNode {
+        if (this.hasChild(child.value))
+            return this.getChild(child.value)!
+
+        this._children.add(child)
+        return child
     }
 
     public removeChild(child: TreeNode): void {
@@ -56,5 +63,13 @@ export class TreeNode {
             return undefined
 
         return this._childrenArr.find(x => x.value === child)
+    }
+
+    public* nodes(): Generator<TreeNode> {
+        yield this
+
+        for (const child of this._children) {
+            yield* child.nodes()
+        }
     }
 }

@@ -1,4 +1,4 @@
-import type { Tree } from "./classes/Tree"
+import { Tree } from "./classes/Tree"
 import type { TreeNode } from "./classes/TreeNode"
 import { Container } from "./classes/Container"
 import { DrawableNode } from "./classes/DrawableNode"
@@ -18,7 +18,7 @@ let tree: Tree;
 let depthMap: Map<number, number>;
 
 let container: Container
-let nodes: DrawableNode[] = []
+let drawableTree: Tree;
 
 export function updateTreeData(t: Tree) {
     tree = t
@@ -32,7 +32,8 @@ export function updateTreeData(t: Tree) {
     const containerWidth = (width * templateNode.width) + (padding.x * templateNode.width * (width-1))
     const containerHeight = (height *templateNode.height) + (padding.y * templateNode.height * (height-1))
 
-    container = new Container(0, 0, containerWidth, containerHeight, padding, nodes)
+    container = new Container(0, 0, containerWidth, containerHeight, padding, drawableTree)
+    container.log()
 }
 
 export function drawContent(canvas: HTMLCanvasElement, width: number, height: number, zoom: number, offsetX: number, offsetY: number): void {
@@ -80,15 +81,20 @@ function depth(node: TreeNode, i?: number, parent?: DrawableNode) {
 
     let set = depthMap.get(index)
     let drawable: DrawableNode | undefined = undefined
+
     if (set === undefined) {
         drawable = new DrawableNode(0, index, templateNode.width, templateNode.height, "blue", container, node.value, parent)
-        nodes.push(drawable)
+        drawable.parent?.addChildNode(drawable)
         depthMap.set(index, 1)
     }
     else {
         drawable = new DrawableNode(set, index, templateNode.width, templateNode.height, "blue", container, node.value, parent)
-        nodes.push(drawable)
+        drawable.parent?.addChildNode(drawable)
         depthMap.set(index, set + 1)
+    }
+
+    if (parent === undefined) {
+        drawableTree = new Tree(drawable)
     }
 
     for (let child of node.children.values()) {
@@ -96,13 +102,9 @@ function depth(node: TreeNode, i?: number, parent?: DrawableNode) {
     }
 }
 
-export function getTreeDepthMap(tree: Tree): Map<number, number> {
+export function getTreeDepthMap(tree: Tree) {
     depthMap = new Map()
     depth(tree.root)
 
-    // console.log(nodes[20].value, nodes[20].columnIndex, nodes[20].rowIndex)
-    // console.log(nodes[20].parent)
-    console.log(nodes[0])
-
-    return depthMap
+    console.log(drawableTree)
 }
