@@ -29,7 +29,12 @@ export class TreeNode {
     }
     
     public addChild(child: string): TreeNode {
+        // make it so it works on nodes as well
         let childNode = new TreeNode(child, this)
+
+        if (this.hasChild(child))
+            return this.getChild(child)!
+
         this._children.add(childNode)
         return childNode
     }

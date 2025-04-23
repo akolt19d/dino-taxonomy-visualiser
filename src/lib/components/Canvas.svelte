@@ -4,7 +4,7 @@
     import { drawContent, updateTreeData } from "$lib/DrawContent";
     import { clamp } from "$lib/Utils";
 
-    let { tree, depthMap } = $props()
+    let { tree } = $props()
 
     let canvas: HTMLCanvasElement
     
@@ -32,7 +32,7 @@
         window.onresize = resizeCanvas
 
         $effect(() => {
-            updateTreeData(tree, depthMap)
+            updateTreeData(tree)
             console.log("Tree data updated.")
         })
 

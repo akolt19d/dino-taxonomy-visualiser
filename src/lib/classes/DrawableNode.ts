@@ -1,7 +1,8 @@
 import { clamp } from "$lib/Utils"
 import type { Container } from "./Container"
+import { TreeNode } from "./TreeNode"
 
-export class DrawableNode {
+export class DrawableNode extends TreeNode {
     private _width: number
     private _height: number 
     private _color: string
@@ -12,7 +13,9 @@ export class DrawableNode {
     public width: number
     public height: number
 
-    constructor(columnIndex: number, rowIndex: number, width: number, height: number, color: string, container: Container) {
+    constructor(columnIndex: number, rowIndex: number, width: number, height: number, color: string, container: Container, value: string, parent?: TreeNode) {
+        super(value, parent)
+
         this._width = width
         this._height = height
         this._color = color

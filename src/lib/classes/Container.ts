@@ -34,8 +34,8 @@ export class Container {
         this.padding = padding
     }
 
-    private get _dragSpeed(): number {
-        return clamp(0.5, this.width, 2)/2
+    private _dragSpeed(zoom: number): number {
+        return clamp(0.5, zoom, 2)/2
     }
 
     public draw(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
@@ -52,8 +52,8 @@ export class Container {
     }
 
     public transform(zoom: number, offsetX: number, offsetY: number): void {
-        this.x = (this._x + offsetX) * this._dragSpeed
-        this.y = (this._y + offsetY) * this._dragSpeed
+        this.x = (this._x + offsetX) * this._dragSpeed(zoom)
+        this.y = (this._y + offsetY) * this._dragSpeed(zoom)
         this.width = this._width * zoom
         this.height = this._height * zoom
 
