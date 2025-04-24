@@ -27,7 +27,7 @@ export function updateTreeData(t: Tree) {
     const { width, height } = calcContainerSize(depthMap)
     const padding = {
         x: 1,
-        y: 1
+        y: 2
     }
     const containerWidth = (width * templateNode.width) + (padding.x * templateNode.width * (width-1))
     const containerHeight = (height *templateNode.height) + (padding.y * templateNode.height * (height-1))

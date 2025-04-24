@@ -69,7 +69,7 @@ export class Container {
         this.y = (this._y + offsetY) * this._dragSpeed(zoom)
         this.width = this._width * zoom
         this.height = this._height * zoom
-        this.lineWidth = Math.max(Math.round(this._lineWidth * zoom), 1)
+        this.lineWidth = Math.max(Math.round(this._lineWidth * zoom), 2)
 
         this.scaleNodes(zoom)
     }
@@ -99,9 +99,21 @@ export class Container {
         ctx.lineWidth = this.lineWidth
         ctx.beginPath()
         ctx.moveTo(start.x, start.y)
-        // ctx.lineTo(end.x, end.y)
-        let breakpoint = (start.y - end.y) * this.padding.y
-        ctx.bezierCurveTo(start.x, start.y - breakpoint, end.x, end.y + breakpoint, end.x, end.y)
+
+        let breakpoint = ((start.y - end.y) * this.padding.y)/(2 * this.padding.y)
+        let direction = Math.sign(start.x - end.x)
+
+        switch (direction) {
+            case 0:
+                ctx.lineTo(end.x, end.y)
+                break;
+            default:
+                ctx.arcTo(start.x, start.y - breakpoint, start.x - (breakpoint * direction), start.y - breakpoint, breakpoint)
+                ctx.lineTo(end.x + (breakpoint * direction), end.y + breakpoint)
+                ctx.arcTo(end.x, end.y + breakpoint, end.x, end.y, breakpoint)
+                break;
+        }
+
         ctx.stroke()
     }
 
