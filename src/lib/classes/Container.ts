@@ -2,7 +2,17 @@ import { clamp } from "$lib/Utils"
 import { DrawableNode } from "./DrawableNode"
 import type { Tree } from "./Tree"
 
-function isVisibleOnCanvas(x: number, y: number, width: number, height: number, canvasWidth: number, canvasHeight: number): boolean {
+function isNotVisibleOnCanvas(x: number, y: number, width: number, height: number, canvasWidth: number, canvasHeight: number): boolean {
+    return (x > canvasWidth || x + width < 0 || y > canvasHeight || y + height < 0)
+}
+
+function isConnectionNotVisibleOnCanvas(start: { x: number, y: number }, end: { x: number, y: number }, canvasWidth: number, canvasHeight: number): boolean {
+    const x = Math.min(start.x, end.x)
+    const y = Math.min(start.y, end.y)
+
+    const width = Math.abs(start.x - end.x)
+    const height = Math.abs(start.y - end.y)
+
     return (x > canvasWidth || x + width < 0 || y > canvasHeight || y + height < 0)
 }
 
@@ -13,12 +23,14 @@ export class Container {
     private _height: number 
     private _padding: { x: number, y: number }
     private _tree: Tree
+    private _lineWidth: number = 10
 
     public x: number 
     public y: number
     public width: number
     public height: number
     public padding: { x: number, y: number }
+    public lineWidth: number = this._lineWidth
 
     constructor(x: number, y: number, width: number, height: number, padding: { x: number, y: number }, tree: Tree) {
         this._tree = tree
@@ -40,7 +52,7 @@ export class Container {
     }
 
     public draw(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
-        if (isVisibleOnCanvas(this.x, this.y, this.width, this.height, canvasWidth, canvasHeight))
+        if (isNotVisibleOnCanvas(this.x, this.y, this.width, this.height, canvasWidth, canvasHeight))
             return
 
         // ctx.fillStyle = "brown"
@@ -57,6 +69,7 @@ export class Container {
         this.y = (this._y + offsetY) * this._dragSpeed(zoom)
         this.width = this._width * zoom
         this.height = this._height * zoom
+        this.lineWidth = Math.max(Math.round(this._lineWidth * zoom), 1)
 
         this.scaleNodes(zoom)
     }
@@ -82,9 +95,8 @@ export class Container {
     }
 
     private connectNodes(ctx: CanvasRenderingContext2D, start: Coordinates, end: Coordinates): void {
-
         ctx.strokeStyle = "white"
-        ctx.lineWidth = 3
+        ctx.lineWidth = this.lineWidth
         ctx.beginPath()
         ctx.moveTo(start.x, start.y)
         // ctx.lineTo(end.x, end.y)
@@ -103,10 +115,12 @@ export class Container {
 
             node.setPosition(x, y)
             
-            if (node.parent && node.parent instanceof DrawableNode)
-                this.connectNodes(ctx, node.topAnchor!, node.parent.bottomAnchor!)
+            if (node.parent && node.parent instanceof DrawableNode) {
+                if (!isConnectionNotVisibleOnCanvas(node.topAnchor!, node.parent.bottomAnchor!, canvasWidth, canvasHeight))
+                    this.connectNodes(ctx, node.topAnchor!, node.parent.bottomAnchor!)
+            }
 
-            if (isVisibleOnCanvas(x, y, node.width, node.height, canvasWidth, canvasHeight))
+            if (isNotVisibleOnCanvas(x, y, node.width, node.height, canvasWidth, canvasHeight))
                 return
 
             node.draw(ctx)
