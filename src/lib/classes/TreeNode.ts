@@ -26,6 +26,10 @@ export class TreeNode {
         return this._dinosaurData !== undefined
     }
 
+    public get isRoot(): boolean {
+        return this._parent === undefined
+    }
+
     public get children(): Set<TreeNode> {
         return this._children
     }

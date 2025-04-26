@@ -26,14 +26,15 @@ export function updateTreeData(t: Tree) {
     getTreeDepthMap(tree)
     const { width, height } = calcContainerSize(depthMap)
     const padding = {
-        x: 1,
-        y: 2
+        x: 2,
+        y: 4
     }
     const containerWidth = (width * templateNode.width) + (padding.x * templateNode.width * (width-1))
     const containerHeight = (height *templateNode.height) + (padding.y * templateNode.height * (height-1))
 
     container = new Container(0, 0, containerWidth, containerHeight, padding, drawableTree)
     // container.log()
+    // console.log(...drawableTree.root.nodes())
 }
 
 export function drawContent(canvas: HTMLCanvasElement, width: number, height: number, zoom: number, offsetX: number, offsetY: number): void {
@@ -83,12 +84,12 @@ function depth(node: TreeNode, i?: number, parent?: DrawableNode) {
     let drawable: DrawableNode | undefined = undefined
 
     if (set === undefined) {
-        drawable = new DrawableNode(0, index, templateNode.width, templateNode.height, "maroon", container, node.value, parent, node.dinosaurData)
+        drawable = new DrawableNode(index, templateNode.width, templateNode.height, "maroon", container, node.value, parent, node.dinosaurData)
         drawable.parent?.addChildNode(drawable)
         depthMap.set(index, 1)
     }
     else {
-        drawable = new DrawableNode(set, index, templateNode.width, templateNode.height, "maroon", container, node.value, parent, node.dinosaurData)
+        drawable = new DrawableNode(index, templateNode.width, templateNode.height, "maroon", container, node.value, parent, node.dinosaurData)
         drawable.parent?.addChildNode(drawable)
         depthMap.set(index, set + 1)
     }
@@ -106,5 +107,7 @@ export function getTreeDepthMap(tree: Tree) {
     depthMap = new Map()
     depth(tree.root)
 
+    if(drawableTree.root instanceof DrawableNode)
+        drawableTree.root.spaceChildren(0)
     console.log(drawableTree)
 }
