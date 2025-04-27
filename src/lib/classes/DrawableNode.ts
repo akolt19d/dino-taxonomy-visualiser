@@ -50,9 +50,11 @@ export class DrawableNode extends TreeNode {
 
         ctx.fillStyle = this._color
         ctx.fillRect(this.x, this.y, this.width, this.height)
-        ctx.strokeStyle = "white"
-        ctx.lineWidth = 5
-        // ctx.strokeRect(this.x, this.y, this.width, this.height)
+        ctx.fillStyle = "black"
+        ctx.font = `${this.height/2}px Arial`
+        ctx.textAlign = "center"
+        ctx.textBaseline = "middle"
+        ctx.fillText(this.value, this.x + (this.width / 2), this.y + (this.height / 2))
     }
 
     public get topAnchor(): Coordinates | undefined {

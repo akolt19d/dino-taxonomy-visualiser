@@ -23,7 +23,7 @@ export class Container {
     private _height: number 
     private _padding: { x: number, y: number }
     private _tree: Tree
-    private _lineWidth: number = 10
+    private _lineWidth: number = 5
 
     public x: number 
     public y: number
@@ -48,7 +48,28 @@ export class Container {
     }
 
     private _dragSpeed(zoom: number): number {
-        return clamp(0.5, zoom, 2)/2
+        // [0.05, 0.1, 0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2]
+        switch (zoom) {
+            case 0.05:
+                return 8
+            case 0.1:
+                return 6
+            case 0.2:
+                return 2
+            case 0.4:
+                return 1.5
+            case 0.5:
+            case 0.6:
+            case 0.7:
+            case 0.8:
+                return 1
+            case 0.9:
+            case 1:
+            case 2:
+                return .5
+            default:
+                return 1
+        }
     }
 
     public draw(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
@@ -114,14 +135,14 @@ export class Container {
                 ctx.lineTo(end.x, end.y)
                 break;
             default:
-                let colDistance = Math.abs(startNode.columnIndex - endNode.columnIndex)
-                if (colDistance < 1 && colDistance > 0) {
-                    ctx.bezierCurveTo(start.x, start.y - breakpoint, end.x, end.y + breakpoint, end.x, end.y)
-                } else {
+                // let colDistance = Math.abs(startNode.columnIndex - endNode.columnIndex)
+                // if (colDistance < 1 && colDistance > 0) {
+                //     ctx.bezierCurveTo(start.x, start.y - breakpoint, end.x, end.y + breakpoint, end.x, end.y)
+                // } else {
                     ctx.arcTo(start.x, start.y - breakpoint, start.x - (breakpoint * direction), start.y - breakpoint, breakpoint)
                     ctx.lineTo(end.x + (breakpoint * direction), end.y + breakpoint)
                     ctx.arcTo(end.x, end.y + breakpoint, end.x, end.y, breakpoint)
-                }
+                // }
                 break;
         }
 
@@ -133,7 +154,7 @@ export class Container {
             if (!(node instanceof DrawableNode))
                 return 
 
-            const x = this.x + (node.columnIndex * node.width) + (this.padding.x * node.width * node.columnIndex)
+            const x = this.x + (node.columnIndex * node.width/32) + (this.padding.x * node.width*.75 * node.columnIndex)
             const y = this.y + (node.rowIndex * node.height) + (this.padding.y * node.height * node.rowIndex)
 
             node.setPosition(x, y)

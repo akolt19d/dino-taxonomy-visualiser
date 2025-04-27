@@ -37,7 +37,8 @@
         })
 
         $effect(() => {
-            drawContent(canvas, canvasWidth, canvasHeight, getZoom(), offsetX, offsetY)
+            let zoom = getZoom()
+            drawContent(canvas, canvasWidth, canvasHeight, zoom, offsetX*zoom, offsetY*zoom)
         })
 
         $effect(() => {

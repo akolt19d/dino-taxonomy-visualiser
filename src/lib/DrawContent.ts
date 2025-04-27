@@ -10,7 +10,7 @@ let globals = {
 }
 
 const templateNode = {
-    width: 50,
+    width: 300,
     height: 50
 }
 
