@@ -10,8 +10,8 @@ let globals = {
 }
 
 const templateNode = {
-    width: 200,
-    height: 200
+    width: 50,
+    height: 50
 }
 
 let tree: Tree;
@@ -27,7 +27,7 @@ export function updateTreeData(t: Tree) {
     const { width, height } = calcContainerSize(depthMap)
     const padding = {
         x: 2,
-        y: 4
+        y: 2
     }
     const containerWidth = (width * templateNode.width) + (padding.x * templateNode.width * (width-1))
     const containerHeight = (height *templateNode.height) + (padding.y * templateNode.height * (height-1))

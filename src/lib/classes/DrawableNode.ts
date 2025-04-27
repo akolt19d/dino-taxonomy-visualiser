@@ -2,8 +2,8 @@ import { clamp } from "$lib/Utils"
 import type { Container } from "./Container"
 import { TreeNode } from "./TreeNode"
 
-function getColumnIndex(maxChildRow: number) {
-    return (maxChildRow - 1)/2
+function getColumnIndex(childBranchAmount: number) {
+    return (childBranchAmount - 1)/2
 }
 
 export class DrawableNode extends TreeNode {
@@ -79,28 +79,7 @@ export class DrawableNode extends TreeNode {
         }
     }
 
-    public get maxChildRow(): number {
-        // if(this.parent?.childrenSize === 1 && this.parent instanceof DrawableNode)
-        //     return this.parent.columnIndex
-        if(this.childrenSize === 0)
-            return 0
-
-        // let map = new Map<number, number>()
-    
-        // for (const child of this.nodes()) {
-        //     if (child instanceof DrawableNode) {
-        //         let set = map.get(child.rowIndex)
-        //         if (set === undefined) {
-        //             map.set(child.rowIndex, child.childrenSize)
-        //         }
-        //         else {
-        //             map.set(child.rowIndex, set + child.childrenSize)
-        //         }
-        //     }
-        // }
-    
-        // return Math.max(...map.values())
-
+    public get childBranchAmount(): number {
         let branches = 0
         for (const child of this.nodes()) {
             if (child.isDinosaur)
@@ -111,14 +90,10 @@ export class DrawableNode extends TreeNode {
     }
 
     public spaceChildren(globalOffset: number): void {
-        if (this.childrenSize === 0) {
-            // if (this.parent instanceof DrawableNode)
-            //     this.columnIndex = this.parent.columnIndex
-
+        if (this.childrenSize === 0)
             return
-        }
 
-        if (this.maxChildRow === 1) {
+        if (this.childBranchAmount === 1) {
             for (const child of this.children) {
                 if (!(child instanceof DrawableNode))
                     continue
@@ -130,7 +105,7 @@ export class DrawableNode extends TreeNode {
         }
 
         if (this.isRoot)
-            this.columnIndex = getColumnIndex(this.maxChildRow)
+            this.columnIndex = getColumnIndex(this.childBranchAmount)
 
         let offset = 0
         this.children.forEach(child => {
@@ -138,8 +113,8 @@ export class DrawableNode extends TreeNode {
                 return
 
             let totalOffset = offset + globalOffset
-            child.columnIndex = getColumnIndex(child.maxChildRow) + totalOffset
-            offset += child.maxChildRow
+            child.columnIndex = getColumnIndex(child.childBranchAmount) + totalOffset
+            offset += child.childBranchAmount
             child.spaceChildren(totalOffset)
         })
     }

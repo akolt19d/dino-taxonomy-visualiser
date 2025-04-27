@@ -52,8 +52,8 @@ export class Container {
     }
 
     public draw(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {
-        if (isNotVisibleOnCanvas(this.x, this.y, this.width, this.height, canvasWidth, canvasHeight))
-            return
+        // if (isNotVisibleOnCanvas(this.x, this.y, this.width, this.height, canvasWidth, canvasHeight))
+        //     return
 
         // ctx.fillStyle = "brown"
         // ctx.fillRect(this.x, this.y, this.width, this.height)
@@ -94,7 +94,13 @@ export class Container {
         })
     }
 
-    private connectNodes(ctx: CanvasRenderingContext2D, start: Coordinates, end: Coordinates): void {
+    private connectNodes(ctx: CanvasRenderingContext2D, startNode: DrawableNode, endNode: DrawableNode): void {
+        const start = startNode.topAnchor
+        const end = endNode.bottomAnchor
+
+        if (!start || !end)
+            return
+
         ctx.strokeStyle = "white"
         ctx.lineWidth = this.lineWidth
         ctx.beginPath()
@@ -108,9 +114,14 @@ export class Container {
                 ctx.lineTo(end.x, end.y)
                 break;
             default:
-                ctx.arcTo(start.x, start.y - breakpoint, start.x - (breakpoint * direction), start.y - breakpoint, breakpoint)
-                ctx.lineTo(end.x + (breakpoint * direction), end.y + breakpoint)
-                ctx.arcTo(end.x, end.y + breakpoint, end.x, end.y, breakpoint)
+                let colDistance = Math.abs(startNode.columnIndex - endNode.columnIndex)
+                if (colDistance < 1 && colDistance > 0) {
+                    ctx.bezierCurveTo(start.x, start.y - breakpoint, end.x, end.y + breakpoint, end.x, end.y)
+                } else {
+                    ctx.arcTo(start.x, start.y - breakpoint, start.x - (breakpoint * direction), start.y - breakpoint, breakpoint)
+                    ctx.lineTo(end.x + (breakpoint * direction), end.y + breakpoint)
+                    ctx.arcTo(end.x, end.y + breakpoint, end.x, end.y, breakpoint)
+                }
                 break;
         }
 
@@ -129,7 +140,7 @@ export class Container {
             
             if (node.parent && node.parent instanceof DrawableNode) {
                 if (!isConnectionNotVisibleOnCanvas(node.topAnchor!, node.parent.bottomAnchor!, canvasWidth, canvasHeight))
-                    this.connectNodes(ctx, node.topAnchor!, node.parent.bottomAnchor!)
+                    this.connectNodes(ctx, node, node.parent)
             }
 
             if (isNotVisibleOnCanvas(x, y, node.width, node.height, canvasWidth, canvasHeight))
