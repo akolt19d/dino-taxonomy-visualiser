@@ -139,4 +139,11 @@ export class DrawableNode extends TreeNode {
         if(this.parent instanceof DrawableNode)
                 this.parent?.unselect()
     }
+
+    public isClicked(x: number, y: number): boolean {
+        if (this.x === undefined || this.y === undefined)
+            return false
+
+        return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height
+    }
 }

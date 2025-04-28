@@ -1,7 +1,7 @@
 <script lang="ts">
     import { getZoom } from "$lib/stores/Zoom.svelte";
-    import { isSelectMode } from "$lib/stores/MouseMode.svelte";
-    import { drawContent, updateTreeData } from "$lib/DrawContent";
+    import { isMoveMode, isSelectMode } from "$lib/stores/MouseMode.svelte";
+    import { drawContent, handleCanvasClick, updateTreeData } from "$lib/DrawContent";
     import { clamp } from "$lib/Utils";
 
     let { tree } = $props()
@@ -92,6 +92,16 @@
         // offsetY = clamp(-canvasHeight, offsetY, canvasHeight)
         setCurrentMousePosition(screenX, screenY)
     } 
+
+    function handleClick(e: MouseEvent) {
+        if (isMoveMode())
+            return
+
+        const { layerX, layerY } = e
+        let zoom = getZoom()
+        handleCanvasClick(layerX, layerY)
+        drawContent(canvas, canvasWidth, canvasHeight, zoom, offsetX*zoom, offsetY*zoom)
+    }
 </script>
 
 <canvas
@@ -99,6 +109,7 @@
     onmousedown={handleMouseDown} 
     onmouseup={handleMouseUp} 
     onmousemove={handleDrag}
+    onclick={handleClick}
     width={canvasWidth} 
     height={canvasHeight}
     class="{cursorState}"

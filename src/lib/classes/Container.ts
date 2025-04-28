@@ -123,9 +123,12 @@ export class Container {
             return
 
         ctx.strokeStyle = startNode.selected ? "blue" : "white"
-        ctx.lineWidth = this.lineWidth
+        ctx.lineWidth = startNode.selected ? this.lineWidth*2 : this.lineWidth
         ctx.beginPath()
         ctx.moveTo(start.x, start.y)
+
+        if (!startNode.selected)
+            ctx.globalCompositeOperation='destination-over'
 
         let breakpoint = ((start.y - end.y) * this.padding.y)/(2 * this.padding.y)
         let direction = Math.sign(start.x - end.x)
@@ -147,6 +150,7 @@ export class Container {
         }
 
         ctx.stroke()
+        ctx.globalCompositeOperation='source-over'
     }
 
     private drawNodes(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number): void {

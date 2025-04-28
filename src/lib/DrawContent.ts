@@ -20,6 +20,8 @@ let depthMap: Map<number, number>;
 let container: Container
 let drawableTree: Tree;
 
+let selectedNode: DrawableNode | undefined = undefined
+
 export function updateTreeData(t: Tree) {
     tree = t
 
@@ -54,6 +56,32 @@ export function drawContent(canvas: HTMLCanvasElement, width: number, height: nu
     
     container.transform(globals.zoom, globals.offsetX, globals.offsetY)
     container.draw(ctx, width, height)
+}
+
+export function handleCanvasClick(x: number, y: number): void {
+    if (container === undefined || drawableTree === undefined)
+        return
+
+    for (const node of drawableTree.nodes()) {
+        if (!(node instanceof DrawableNode))
+            return 
+
+        if (node.isClicked(x, y)) {
+            if (selectedNode !== undefined)
+                selectedNode.unselect()
+
+            if (node === selectedNode) {
+                selectedNode.unselect()
+                selectedNode = undefined
+                break
+            }
+
+            node.select()
+            selectedNode = node
+
+            break
+        }
+    }
 }
 
 function setGlobals(offsetX: number, offsetY: number, zoom: number) {
