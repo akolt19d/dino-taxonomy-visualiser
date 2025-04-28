@@ -16,6 +16,7 @@ export class DrawableNode extends TreeNode {
     public rowIndex: number
     public width: number
     public height: number
+    public selected: boolean = false
     private x: number | undefined = undefined
     private y: number | undefined = undefined
 
@@ -55,6 +56,12 @@ export class DrawableNode extends TreeNode {
         ctx.textAlign = "center"
         ctx.textBaseline = "middle"
         ctx.fillText(this.value, this.x + (this.width / 2), this.y + (this.height / 2))
+
+        if (this.selected) {
+            ctx.strokeStyle = "blue"
+            ctx.lineWidth = 2
+            ctx.strokeRect(this.x, this.y, this.width, this.height)
+        }
     }
 
     public get topAnchor(): Coordinates | undefined {
@@ -119,5 +126,17 @@ export class DrawableNode extends TreeNode {
             offset += child.childBranchAmount
             child.spaceChildren(totalOffset)
         })
+    }
+
+    public select(): void {
+        this.selected = true 
+        if(this.parent instanceof DrawableNode)
+                this.parent?.select()
+    }
+
+    public unselect(): void {
+        this.selected = false 
+        if(this.parent instanceof DrawableNode)
+                this.parent?.unselect()
     }
 }

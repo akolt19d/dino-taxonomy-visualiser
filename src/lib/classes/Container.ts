@@ -122,7 +122,7 @@ export class Container {
         if (!start || !end)
             return
 
-        ctx.strokeStyle = "white"
+        ctx.strokeStyle = startNode.selected ? "blue" : "white"
         ctx.lineWidth = this.lineWidth
         ctx.beginPath()
         ctx.moveTo(start.x, start.y)
@@ -139,9 +139,9 @@ export class Container {
                 // if (colDistance < 1 && colDistance > 0) {
                 //     ctx.bezierCurveTo(start.x, start.y - breakpoint, end.x, end.y + breakpoint, end.x, end.y)
                 // } else {
-                    ctx.arcTo(start.x, start.y - breakpoint, start.x - (breakpoint * direction), start.y - breakpoint, breakpoint)
-                    ctx.lineTo(end.x + (breakpoint * direction), end.y + breakpoint)
-                    ctx.arcTo(end.x, end.y + breakpoint, end.x, end.y, breakpoint)
+                ctx.arcTo(start.x, start.y - breakpoint, start.x - (breakpoint * direction), start.y - breakpoint, breakpoint)
+                ctx.lineTo(end.x + (breakpoint * direction), end.y + breakpoint)
+                ctx.arcTo(end.x, end.y + breakpoint, end.x, end.y, breakpoint)
                 // }
                 break;
         }
