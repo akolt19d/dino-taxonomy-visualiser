@@ -3,6 +3,7 @@
     import { isMoveMode, isSelectMode } from "$lib/stores/MouseMode.svelte";
     import { drawContent, handleCanvasClick, updateTreeData } from "$lib/DrawContent";
     import { clamp } from "$lib/Utils";
+  import { setSelectedDinosaur } from "$lib/stores/SelectedDinosaur.svelte";
 
     let { tree } = $props()
 
@@ -99,7 +100,9 @@
 
         const { layerX, layerY } = e
         let zoom = getZoom()
-        handleCanvasClick(layerX, layerY)
+        handleCanvasClick(layerX, layerY, (dinosaur: Dinosaur | undefined) => {
+            setSelectedDinosaur(dinosaur)
+        })
         drawContent(canvas, canvasWidth, canvasHeight, zoom, offsetX*zoom, offsetY*zoom)
     }
 </script>

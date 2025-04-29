@@ -134,10 +134,10 @@ export class DrawableNode extends TreeNode {
                 this.parent?.select()
     }
 
-    public unselect(): void {
+    public deselect(): void {
         this.selected = false 
         if(this.parent instanceof DrawableNode)
-                this.parent?.unselect()
+                this.parent?.deselect()
     }
 
     public isClicked(x: number, y: number): boolean {

@@ -50,15 +50,12 @@ export function drawContent(canvas: HTMLCanvasElement, width: number, height: nu
     setGlobals(offsetX, offsetY, zoom)
 
     ctx.clearRect(0, 0, width, height)
-
-    ctx.fillStyle = "black"
-    ctx.font = `${30*zoom}px Arial`
     
     container.transform(globals.zoom, globals.offsetX, globals.offsetY)
     container.draw(ctx, width, height)
 }
 
-export function handleCanvasClick(x: number, y: number): void {
+export function handleCanvasClick(x: number, y: number, callback: (dinosaur: Dinosaur | undefined) => void): void {
     if (container === undefined || drawableTree === undefined)
         return
 
@@ -67,17 +64,19 @@ export function handleCanvasClick(x: number, y: number): void {
             return 
 
         if (node.isClicked(x, y)) {
-            if (selectedNode !== undefined)
-                selectedNode.unselect()
-
-            if (node === selectedNode) {
-                selectedNode.unselect()
-                selectedNode = undefined
-                break
+            if (selectedNode !== undefined) {
+                selectedNode.deselect()
+                callback(undefined)
             }
+
+            if (node === selectedNode)
+                break
 
             node.select()
             selectedNode = node
+
+            if (node.isDinosaur)
+                callback(node.dinosaurData!)
 
             break
         }
