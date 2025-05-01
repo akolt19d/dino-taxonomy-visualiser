@@ -28,8 +28,8 @@ export function updateTreeData(t: Tree) {
     getTreeDepthMap(tree)
     const { width, height } = calcContainerSize(depthMap)
     const padding = {
-        x: 2,
-        y: 2
+        x: 1.5,
+        y: 7.5
     }
     const containerWidth = (width * templateNode.width) + (padding.x * templateNode.width * (width-1))
     const containerHeight = (height *templateNode.height) + (padding.y * templateNode.height * (height-1))
@@ -69,8 +69,10 @@ export function handleCanvasClick(x: number, y: number, callback: (dinosaur: Din
                 callback(undefined)
             }
 
-            if (node === selectedNode)
-                break
+            if (node === selectedNode) {
+                selectedNode = undefined
+                return
+            }
 
             node.select()
             selectedNode = node

@@ -138,14 +138,14 @@ export class Container {
                 ctx.lineTo(end.x, end.y)
                 break;
             default:
-                // let colDistance = Math.abs(startNode.columnIndex - endNode.columnIndex)
-                // if (colDistance < 1 && colDistance > 0) {
-                //     ctx.bezierCurveTo(start.x, start.y - breakpoint, end.x, end.y + breakpoint, end.x, end.y)
-                // } else {
+                let colDistance = Math.abs(startNode.columnIndex - endNode.columnIndex)
+                if (colDistance < 1 && colDistance > 0) {
+                    ctx.bezierCurveTo(start.x, start.y - breakpoint, end.x, end.y + breakpoint, end.x, end.y)
+                } else {
                 ctx.arcTo(start.x, start.y - breakpoint, start.x - (breakpoint * direction), start.y - breakpoint, breakpoint)
                 ctx.lineTo(end.x + (breakpoint * direction), end.y + breakpoint)
                 ctx.arcTo(end.x, end.y + breakpoint, end.x, end.y, breakpoint)
-                // }
+                }
                 break;
         }
 
@@ -158,7 +158,7 @@ export class Container {
             if (!(node instanceof DrawableNode))
                 return 
 
-            const x = this.x + (node.columnIndex * node.width/32) + (this.padding.x * node.width*.75 * node.columnIndex)
+            const x = this.x + (node.columnIndex * node.width/32) + (this.padding.x * node.width * node.columnIndex)
             const y = this.y + (node.rowIndex * node.height) + (this.padding.y * node.height * node.rowIndex)
 
             node.setPosition(x, y)
