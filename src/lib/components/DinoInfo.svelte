@@ -17,6 +17,7 @@
             <i>
                 {dinosaur.name} {dinosaur.species}
             </i>
+            <img src={dinosaur.imgLink} alt={dinosaur.name}>
             <ul>
                 <li>diet: {dinosaur.diet}</li>
                 <li>lived {dinosaur.period}</li>

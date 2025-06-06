@@ -9,7 +9,8 @@ export class DinosaurBuilder {
         // taxonomy: [],
         namedBy: "",
         species: "",
-        link: ""
+        link: "",
+        imgLink: "",
     }
 
     public setName(name: string): DinosaurBuilder {
@@ -59,6 +60,11 @@ export class DinosaurBuilder {
 
     public setLink(link: string): DinosaurBuilder {
         this.dinosaur.link = link;
+        return this;
+    }
+
+    public setImgLink(imgLink: string): DinosaurBuilder {
+        this.dinosaur.imgLink = imgLink;
         return this;
     }
 

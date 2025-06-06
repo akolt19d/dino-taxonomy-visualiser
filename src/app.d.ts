@@ -20,6 +20,7 @@ declare global {
 		namedBy: string;
 		species: string;
 		link: string;
+		imgLink: string;
 	}
 
 	type Coordinates = {
