@@ -2,8 +2,7 @@
     import { getZoom } from "$lib/stores/Zoom.svelte";
     import { isMoveMode, isSelectMode } from "$lib/stores/MouseMode.svelte";
     import { drawContent, handleCanvasClick, updateTreeData } from "$lib/DrawContent";
-    import { clamp } from "$lib/Utils";
-  import { setSelectedDinosaur } from "$lib/stores/SelectedDinosaur.svelte";
+    import { setSelectedDinosaur, getSelectedDinosaur } from "$lib/stores/SelectedDinosaur.svelte";
 
     let { tree } = $props()
 
@@ -38,6 +37,7 @@
         })
 
         $effect(() => {
+            getSelectedDinosaur()   // Force canvas redraw when selected dinosaur changes
             let zoom = getZoom()
             drawContent(canvas, canvasWidth, canvasHeight, zoom, offsetX*zoom, offsetY*zoom)
         })
@@ -68,36 +68,34 @@
         if(isSelectMode())
             return
 
-        const { screenX, screenY } = e
+        const { clientX, clientY } = e
         isDragging = true
-        setCurrentMousePosition(screenX, screenY)
+        setCurrentMousePosition(clientX, clientY)
     }
 
     function handleMouseUp(e: MouseEvent) {
         if(isSelectMode())
             return
 
-        const { screenX, screenY } = e
+        const { clientX, clientY } = e
         isDragging = false
-        setCurrentMousePosition(screenX, screenY)
+        setCurrentMousePosition(clientX, clientY)
     }
 
     function handleDrag(e: MouseEvent) {
         if (!isDragging || isSelectMode())
             return
             
-        const { screenX, screenY } = e
-        offsetX += screenX - mouseX
-        offsetY += screenY - mouseY
-        // offsetX = clamp(-canvasWidth, offsetX, canvasWidth)
-        // offsetY = clamp(-canvasHeight, offsetY, canvasHeight)
-        setCurrentMousePosition(screenX, screenY)
+        const { clientX, clientY } = e
+        offsetX += clientX - mouseX
+        offsetY += clientY - mouseY
+        setCurrentMousePosition(clientX, clientY)
     } 
 
     function handleClick(e: MouseEvent) {
         if (isMoveMode())
-            return
-
+        return
+    
         const { layerX, layerY } = e
         let zoom = getZoom()
         handleCanvasClick(layerX, layerY, (dinosaur: Dinosaur | undefined) => {

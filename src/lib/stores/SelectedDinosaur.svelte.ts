@@ -7,3 +7,7 @@ export function getSelectedDinosaur(): Dinosaur | undefined {
 export function setSelectedDinosaur(newDinosaur: Dinosaur | undefined): void {
     dinosaur = newDinosaur
 }
+
+export function clearSelectedDinosaur(): void {
+    dinosaur = undefined
+}

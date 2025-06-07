@@ -64,9 +64,9 @@ export class Container {
             case 0.8:
                 return 1
             case 0.9:
+                return .8
             case 1:
-            case 2:
-                return .5
+                return .65
             default:
                 return 1
         }

@@ -85,6 +85,13 @@ export function handleCanvasClick(x: number, y: number, callback: (dinosaur: Din
     }
 }
 
+export function clearSelectedNode(): void {
+    if (selectedNode !== undefined) {
+        selectedNode.deselect()
+        selectedNode = undefined
+    }
+}
+
 function setGlobals(offsetX: number, offsetY: number, zoom: number) {
     globals.offsetX = offsetX
     globals.offsetY = offsetY
